@@ -30,7 +30,6 @@ public class HelloServlet extends HttpServlet {
         String path = "/WEB-INF/Templates/login.html";
         ServletContext servletContext = getServletContext();
         final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-        ctx.setVariable("errorMsg", "TEST"); // TODO: Delete
         templateEngine.process(path, ctx, response.getWriter());
     }
 
