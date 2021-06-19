@@ -1,5 +1,7 @@
 package it.polimi.tiw.TiwProject.controllers;
 
+import it.polimi.tiw.TiwProject.beans.User;
+import it.polimi.tiw.TiwProject.dao.UserDAO;
 import it.polimi.tiw.TiwProject.exception.BadLoginException;
 import it.polimi.tiw.TiwProject.utils.ConnectionHandler;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -45,7 +47,7 @@ public class CheckLogin extends HttpServlet {
         try{
 
             email = StringEscapeUtils.escapeJava(request.getParameter("email"));
-            password = StringEscapeUtils.escapeJava(request.getParameter("password"));
+            password = StringEscapeUtils.escapeJava(request.getParameter("user-password"));
 
             if (email == null ){
 
@@ -72,19 +74,65 @@ public class CheckLogin extends HttpServlet {
         } catch ( Exception e){
 
             e.printStackTrace(); //TODO Comment
-            /*
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorMessage);
-            return;
-            */
             String path = "/WEB-INF/Templates/login.html";
             ServletContext servletContext = getServletContext();
             final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
             ctx.setVariable("errorMsg", errorMessage);
             templateEngine.process(path, ctx, response.getWriter());
+            return;
         }
 
 
+        UserDAO userDAO = new UserDAO(connection); // Create DAO Object for Users
+        User user = null;
 
+        try{
+
+            user = userDAO.checkCredentials(email,password);
+            System.out.println(email);
+            System.out.println(password);
+        } catch (SQLException exception){
+
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not Possible to check credentials");
+            return;
+        } catch (BadLoginException badLoginException){
+
+            // redirects to login screen with error message
+            String path = "/WEB-INF/Templates/login.html";
+            ServletContext servletContext = getServletContext();
+            final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+            ctx.setVariable("errorMsg", badLoginException.getMessage());
+            templateEngine.process(path, ctx, response.getWriter());
+            return;
+        }
+
+        if (user == null) {
+
+            // redirects to login screen with error message
+            String path = "/WEB-INF/Templates/login.html";
+            ServletContext servletContext = getServletContext();
+            final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+            ctx.setVariable("errorMsg", "User does not exists");
+            templateEngine.process(path, ctx, response.getWriter());
+        } else {
+
+            // sets the user as a session attribute
+            request.getSession().setAttribute("user", user);
+
+            String result = "DONE: mail:" + user.getEmail() + " name:" + user.getFirstName(); //TODO:Delete
+            String path = "/WEB-INF/Templates/login.html";
+            ServletContext servletContext = getServletContext();
+            final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+            ctx.setVariable("errorMsg", result);
+            templateEngine.process(path, ctx, response.getWriter());
+
+
+            /* //TODO: uncomment
+            // redirects to the GoToHome Servlet
+            String path = getServletContext().getContextPath() + "/GoToHome";
+            response.sendRedirect(path);
+             */
+        }
     }
 
     public void destroy(){

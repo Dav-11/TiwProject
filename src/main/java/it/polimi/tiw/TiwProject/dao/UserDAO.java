@@ -12,6 +12,10 @@ public class UserDAO {
 
     private Connection connection;
 
+    public UserDAO(Connection connection) {
+        this.connection = connection;
+    }
+
     /**
      *
      * @param email is the mail the user sent as input
@@ -30,7 +34,7 @@ public class UserDAO {
 
             try (ResultSet resultSet = preparedStatement.executeQuery();) {
 
-                if (resultSet.isBeforeFirst()) {
+                if (!resultSet.isBeforeFirst()) {
 
                     return null; // no user found
                 } else {
