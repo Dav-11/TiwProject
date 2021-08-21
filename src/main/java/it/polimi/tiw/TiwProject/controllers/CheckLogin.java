@@ -89,8 +89,8 @@ public class CheckLogin extends HttpServlet {
         try{
 
             user = userDAO.checkCredentials(email,password);
-            System.out.println(email);
-            System.out.println(password);
+            System.out.println(email); //TODO Comment
+            System.out.println(password); //TODO Comment
         } catch (SQLException exception){
 
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not Possible to check credentials");
@@ -119,19 +119,10 @@ public class CheckLogin extends HttpServlet {
             // sets the user as a session attribute
             request.getSession().setAttribute("user", user);
 
-            String result = "DONE: mail:" + user.getEmail() + " name:" + user.getFirstName(); //TODO:Delete
-            String path = "/WEB-INF/Templates/login.html";
-            ServletContext servletContext = getServletContext();
-            final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-            ctx.setVariable("errorMsg", result);
-            templateEngine.process(path, ctx, response.getWriter());
-
-
-            /* //TODO: uncomment
             // redirects to the GoToHome Servlet
             String path = getServletContext().getContextPath() + "/GoToHome";
             response.sendRedirect(path);
-             */
+
         }
     }
 

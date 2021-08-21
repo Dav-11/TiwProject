@@ -22,7 +22,7 @@ public class HelloServlet extends HttpServlet {
         templateResolver.setTemplateMode(TemplateMode.HTML);
         this.templateEngine = new TemplateEngine();
         this.templateEngine.setTemplateResolver(templateResolver);
-        //templateResolver.setSuffix(".html");
+        templateResolver.setSuffix(".html");
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

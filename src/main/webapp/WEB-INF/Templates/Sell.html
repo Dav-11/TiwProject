@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Vendo</title>
+</head>
+<body>
+    <div class="menu">
+        <p>
+            <a th:href="@{/GoToHome}">Homepage</a>
+            <a th:href="@{/GoToSell}">Vendo</a>
+            <a th:href="@{/GoToPurchase}">Acquisto</a>
+        </p>
+    </div>
+    <div class="form">
+        <h3>Completa il form per creare una nuova asta</h3>
+        <form action="#" th:action="@{/CreateAuction}" method="post" enctype="multipart/form-data">
+            <fieldset>
+                <p>Nome dell' articolo: <input type="text" name="itemName" required /></p>
+                <p>Descrizione: <input type="text" name="itemDescription" maxlength="500"/></p>
+                <p>Immagine(jpeg): <input type="file" name="itemPicture" accept="image/jpeg"/></p>
+                <p>Data di fine: <input type="date" name="end_date" required></p>
+                <p>Prezzo iniziale: <input type="number" name="initial_price" step="0.01" min="0" required></p>
+                <p>Rialzo minimo: <input type="number" name="min_rise" step="0.01" min="0" required></p>
+                <input type="submit" name="Crea Asta" value="Crea Asta">
+                <p th:text=" ${errorMsg}"></p>
+            </fieldset>
+        </form>
+    </div>
+    <div class="open-auction-list">
+        <h3>Aste Aperte</h3>
+        <table>
+            <thread>
+                <tr>
+                    <th>Codice Articolo</th>
+                    <th>Nome Articolo</th>
+                    <th>Massima Offerta</th>
+                    <th>Giorni Mancanti</th>
+                    <th>Ore Mancanti</th>
+                    <th>Dettagli</th>
+                </tr>
+            </thread>
+            <tbody>
+                <tr th:each="a : ${openAuctionList}">
+                    <td th:text="${a.item_id}"></td>
+                    <td th:text="${a.name}"></td>
+                    <td th:text="${a.winningBet}"></td>
+                    <td th:text="${a.daysRemaining}"></td>
+                    <td th:text="${a.hoursRemaining}"></td>
+                    <td><a th:href="@{/GetOpenAuction(auction_id=${a.getId()})}">Link</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="closed-auction-list">
+        <h3>Aste Chiuse</h3>
+        <table>
+            <thread>
+                <tr>
+                    <th>Codice Articolo</th>
+                    <th>Nome Articolo</th>
+                    <th>Massima Offerta</th>
+                    <th>Dettagli</th>
+                </tr>
+            </thread>
+            <tbody>
+            <tr th:each="a : ${closedAuctionList}">
+                <td th:text="${a.item_id}"></td>
+                <td th:text="${a.name}"></td>
+                <td th:text="${a.winningBet}"></td>
+                <td><a th:href="@{/GetClosedAuction(auction_id=${a.getId()})}">Link</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

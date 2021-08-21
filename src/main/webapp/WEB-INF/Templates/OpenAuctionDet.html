@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Asta In Corso - Dettagli</title>
+</head>
+<body>
+    <div class="menu">
+        <p>
+            <a th:href="@{/GoToHome}">Homepage</a>
+            <a th:href="@{/GoToSell}">Vendo</a>
+            <a th:href="@{/GoToPurchase}">Acquisto</a>
+        </p>
+    </div>
+    <h2>Dettagli Asta</h2>
+    <hr>
+    <div class="details">
+        <p th:text="${'Data di Inizio: ' + auction.getStart_date()}"></p>
+        <p th:text="${'Data di Fine: ' + auction.getEnd_date()}"></p>
+        <p th:text="${'Prezzo iniziale: ' + auction.getInitial_price()}"></p>
+        <p th:text="${'Rialzo minimo: ' + auction.getMin_rise()}"></p>
+        <p th:text="${'Nome Articolo: ' + auction.getName()}"></p>
+        <p th:text="${'Codice Articolo: ' + auction.getItem_id()}"></p>
+        <p th:if="${ (auction.getDescription() != null) && (! auction.getDescription().isEmpty()) }" th:text="${'Descrizione: ' + auction.getDescription()}"></p>
+        <div class="image" th:if="${auction.getPicture() != null}">
+            <img th:src="*{'data:image/jpeg;base64,' + auction.getBase64Picture()}" alt="picture">
+        </div>
+    </div>
+    <div class="form" th:if="${auction.isOutDated()}">
+        <hr>
+        <form action="#" th:action="@{/CloseAuction}" method="post">
+            <input type="hidden" name="auction_id" th:value="${auction.getId()}">
+            <input type="submit" value="Chiudi Asta">
+            <p th:text=" ${errorMsg}"></p>
+        </form>
+    </div>
+    <h2>Offerte</h2>
+    <hr>
+    <div class="offer-table" th:if="${ ( offerList != null ) && (!offerList.isEmpty()) }">
+        <table>
+            <thread>
+                <tr>
+                    <th>Offerta</th>
+                    <th>Utente</th>
+                    <th>Data</th>
+                </tr>
+            </thread>
+            <tbody>
+                <tr th:each="offer : ${offerList}">
+                    <td th:text="${offer.getAmount()}"></td>
+                    <td th:text="${offer.getUserUserName()}"></td>
+                    <td th:text="${offer.getDate()}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <h3 th:if="${ ( offerList == null ) || (offerList.isEmpty()) }">Nessuna Offerta</h3>
+</body>
+</html>

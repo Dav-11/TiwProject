@@ -26,7 +26,7 @@ public class UserDAO {
      */
     public User checkCredentials(String email, String password) throws SQLException, BadLoginException {
 
-        String query = "SELECT id, first_name, last_name, password FROM user WHERE email = ?";
+        String query = "SELECT * FROM user WHERE email = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
 
@@ -43,11 +43,39 @@ public class UserDAO {
                     String passwordFromDb = resultSet.getString("password");
                     if (password.equals(passwordFromDb)){
 
-                        return new User(resultSet.getInt("id"),resultSet.getString("first_name"),resultSet.getString("last_name"),email);
+                        return new User(
+                                resultSet.getInt("id"),
+                                resultSet.getString("first_name"),
+                                resultSet.getString("last_name"),
+                                resultSet.getString("email"),
+                                resultSet.getString("username")
+                        );
                     } else {
 
                         throw new BadLoginException("Wrong Password");
                     }
+                }
+            }
+        }
+    }
+
+    public String getUserUsername(int userId) throws SQLException {
+
+        String query = "SELECT username FROM user WHERE id = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
+
+            preparedStatement.setInt(1, userId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery();) {
+
+                if (!resultSet.isBeforeFirst()) {
+
+                    return null; // no user found
+                } else {
+
+                    resultSet.next();
+                    return resultSet.getString("username");
                 }
             }
         }
