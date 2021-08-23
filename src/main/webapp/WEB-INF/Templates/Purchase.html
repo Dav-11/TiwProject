@@ -5,23 +5,44 @@
     <title>Acquisto</title>
 </head>
 <body>
+    <div class="menu">
+        <p>
+            <a th:href="@{/GoToHome}">Homepage</a>
+            <a th:href="@{/GoToSell}">Vendo</a>
+            <a th:href="@{/GoToPurchase}">Acquisto</a>
+        </p>
+    </div>
     <div class="form">
-
+        <form action="#" th:action="@{/GoToPurchase}" method="post">
+            <fieldset>
+                <p>
+                    <a>Ricerca: </a>
+                    <input type="text" name="keystring" maxlength="500"/>
+                    <input type="submit" name="Cerca" value="Cerca">
+                </p>
+            </fieldset>
+        </form>
     </div>
     <div class="results">
         <table>
             <thread>
                 <tr>
                     <th>Nome</th>
-                    <th>Description</th>
-                    <th>Link</th>
+                    <th>Descrizione</th>
+                    <th>Offerta Vincente</th>
+                    <th>Giorni Mancanti</th>
+                    <th>Ore Mancanti</th>
+                    <th>Dettagli</th>
                 </tr>
             </thread>
             <tbody>
-                <tr th:each="a : ${auctions}">
-                    <td th:text="${a.itemName}"></td>
-                    <td th:text="${ a.itemDescriprion }"></td>
-                    <td><a th:href="@{/GetPurchaseAuction(missionid=${a.id})}">Details</a></td>
+                <tr th:each="a : ${auctionList}">
+                    <td th:text="${a.getName()}"></td>
+                    <td th:text="${a.getDescription()}"></td>
+                    <td th:text="${a.getWinningBet()}"></td>
+                    <td th:text="${a.getDaysRemaining()}"></td>
+                    <td th:text="${a.getHoursRemaining()}"></td>
+                    <td><a th:href="@{/GetPurchaseAuction(auction_id=${a.id})}">Link</a></td>
                 </tr>
             </tbody>
         </table>

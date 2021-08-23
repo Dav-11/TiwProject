@@ -4,10 +4,7 @@ import it.polimi.tiw.TiwProject.beans.Offer;
 import it.polimi.tiw.TiwProject.beans.User;
 import it.polimi.tiw.TiwProject.exception.BadLoginException;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -83,5 +80,29 @@ public class OfferDAO {
         }
 
         return offerList;
+    }
+
+    public int createOffer(Offer offer) throws SQLException {
+
+        String query = "INSERT INTO offer (amount, sh_address, id_user, id_auction, date) VALUES (?,?,?,?,NOW())";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+
+            preparedStatement.setFloat(1, offer.getAmount());
+            preparedStatement.setString(2, offer.getSh_address());
+            preparedStatement.setInt(3,offer.getId_user());
+            preparedStatement.setInt(4, offer.getId_auction());
+
+            preparedStatement.executeUpdate();
+
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()){
+
+                if (generatedKeys.next()){
+
+                    return generatedKeys.getInt(1);
+                }
+
+                return -1;
+            }
+        }
     }
 }

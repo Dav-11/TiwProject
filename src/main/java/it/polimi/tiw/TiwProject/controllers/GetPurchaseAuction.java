@@ -1,11 +1,12 @@
 package it.polimi.tiw.TiwProject.controllers;
 
-import it.polimi.tiw.TiwProject.beans.Auction;
 import it.polimi.tiw.TiwProject.beans.DashboardAuction;
-import it.polimi.tiw.TiwProject.beans.User;
-import it.polimi.tiw.TiwProject.dao.AuctionDAO;
 import it.polimi.tiw.TiwProject.dao.DashboardAuctionDAO;
 import it.polimi.tiw.TiwProject.utils.ConnectionHandler;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -14,18 +15,25 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-@WebServlet(name = "CloseAuction", value = "/CloseAuction")
-public class CloseAuction extends HttpServlet {
+@WebServlet(name = "GetPurchaseAuction", value = "/GetPurchaseAuction")
+public class GetPurchaseAuction extends HttpServlet {
 
     private Connection connection = null;
+    private TemplateEngine templateEngine;
 
-    public void init() throws ServletException{
+    public void init() throws ServletException {
+        ServletContext servletContext = getServletContext();
+        ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
+        templateResolver.setTemplateMode(TemplateMode.HTML);
+        this.templateEngine = new TemplateEngine();
+        this.templateEngine.setTemplateResolver(templateResolver);
+        templateResolver.setSuffix(".html");
 
         connection = ConnectionHandler.getConnection(getServletContext());
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         HttpSession session = request.getSession();
         if (session.isNew() || session.getAttribute("user") == null) {
@@ -41,64 +49,48 @@ public class CloseAuction extends HttpServlet {
                 auctionId = Integer.parseInt(request.getParameter("auction_id"));
             } catch (NumberFormatException | NullPointerException e){
 
+                e.printStackTrace();
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param value");
                 return;
             }
 
-            User user = (User) session.getAttribute("user");
-
             DashboardAuctionDAO dashboardAuctionDAO = new DashboardAuctionDAO(connection);
             DashboardAuction dashboardAuction = null;
-
-            AuctionDAO auctionDAO = new AuctionDAO(connection);
 
             try {
 
                 dashboardAuction = dashboardAuctionDAO.getAuctionDetail(auctionId);
 
+                // validation
                 if (dashboardAuction == null){
 
-                    errorRender("Auction not found", response);
-                    return;
-                }
-
-                if (dashboardAuction.getId_user() != user.getId()){
-
-                    errorRender("Unauthorized user", response);
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Auction not found");
                     return;
                 }
 
                 if (dashboardAuction.isClosed()){
 
-                    errorRender("Auction is already closed", response);
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Auction is closed");
                     return;
                 }
-
-                auctionDAO.closeAuction(auctionId);
 
             } catch (SQLException e){
 
                 e.printStackTrace();
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to recover auction");
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to recover mission");
                 return;
             }
 
-            String loginPath = getServletContext().getContextPath() + "/GoToSell";
-            response.sendRedirect(loginPath);
+            // render page
+
+            String path = "/WEB-INF/Templates/PurchaseAuction.html";
+            ServletContext servletContext = getServletContext();
+            final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+            ctx.setVariable("auction", dashboardAuction);
+            templateEngine.process(path, ctx, response.getWriter());
             return;
-        }
-    }
 
-    public void destroy() {
-        try {
-            ConnectionHandler.closeConnection(connection);
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-    }
-
-    private void errorRender(String message, HttpServletResponse response) throws IOException{
-        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message);
 
     }
 }

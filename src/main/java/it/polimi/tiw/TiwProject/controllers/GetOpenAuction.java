@@ -75,7 +75,7 @@ public class GetOpenAuction extends HttpServlet {
                 }
                 if (dashboardAuction.getId_user() != user.getId()){
 
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Unauthorized user");
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "Unauthorized user");
                     return;
                 }
 

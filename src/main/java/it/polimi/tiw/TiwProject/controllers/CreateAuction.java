@@ -59,14 +59,6 @@ public class CreateAuction extends HttpServlet {
 
             try{
 
-                System.out.println(request.getParameterMap().keySet());
-                System.out.println(request.getParameterMap().values());
-                System.out.println(request.getParameter("itemName"));
-                System.out.println(request.getParameter("itemDescription"));
-                System.out.println(request.getParameter("itemPicture"));
-                System.out.println(request.getParameter("end_date"));
-
-
                 itemName = StringEscapeUtils.escapeJava(request.getParameter("itemName"));
                 itemDescription = ( request.getParameter("itemDescription") == null ) ? null : StringEscapeUtils.escapeJava(request.getParameter("itemDescription"));
                 itemPicturePart = request.getPart("itemPicture");
@@ -75,14 +67,13 @@ public class CreateAuction extends HttpServlet {
                 initial_price = Float.parseFloat(request.getParameter("initial_price"));
                 min_rise = Float.parseFloat(request.getParameter("min_rise"));
 
-                System.out.println("itmName: " + itemName + " description:" + itemDescription + " picture: " + itemPicture + " end_date:" + end_date + " min_rise:" + min_rise);
+                //System.out.println("itmName: " + itemName + " description:" + itemDescription + " picture: " + itemPicture + " end_date:" + end_date + " min_rise:" + min_rise);
 
             } catch (NumberFormatException | NullPointerException | ParseException e){
 
                 isBadRequest = true;
                 e.printStackTrace();
             }
-            // TODO validation
 
             if ( (itemName == null) || (itemName.isEmpty()) || (end_date == null)){
 
@@ -185,7 +176,7 @@ public class CreateAuction extends HttpServlet {
     }
 
     private void errorRender(String message, HttpServletResponse response) throws IOException{
-        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message);
+        response.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
 
     }
 }

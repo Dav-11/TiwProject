@@ -64,12 +64,12 @@
                 </tr>
             </thread>
             <tbody>
-            <tr th:each="a : ${closedAuctionList}">
-                <td th:text="${a.item_id}"></td>
-                <td th:text="${a.name}"></td>
-                <td th:text="${a.winningBet}"></td>
-                <td><a th:href="@{/GetClosedAuction(auction_id=${a.getId()})}">Link</a></td>
-            </tr>
+                <tr th:each="a : ${closedAuctionList}">
+                    <td th:text="${a.item_id}"></td>
+                    <td th:text="${a.name}"></td>
+                    <td th:text="${a.winningBet}"></td>
+                    <td><a th:href="@{/GetClosedAuction(auction_id=${a.getId()})}">Link</a></td>
+                </tr>
             </tbody>
         </table>
     </div>

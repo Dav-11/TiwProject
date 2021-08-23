@@ -71,6 +71,27 @@ public class DashboardAuctionDAO {
         return  dashboardAuctionList;
     }
 
+    public List<DashboardAuction> getListOfOpenAuctionByKeystring(String keystring) throws SQLException{
+
+        String searchstring = "%" + keystring + "%";
+        List<DashboardAuction> dashboardAuctionList = new ArrayList<>();
+
+        String query = "SELECT * FROM auction_dashboard WHERE (name LIKE ? OR description LIKE ?) AND ( end_date - NOW() > 0 ) ORDER BY (end_date - NOW()) ASC";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
+
+            preparedStatement.setString(1, searchstring);
+            preparedStatement.setString(2, searchstring);
+
+            try (ResultSet result = preparedStatement.executeQuery();) {
+
+                dashboardAuctionList = listBuilder(result);
+            }
+        }
+
+        return  dashboardAuctionList;
+    }
+
     public DashboardAuction getAuctionDetail(int auctionId) throws SQLException{
 
         String query = "SELECT * FROM auction_dashboard WHERE id = ?";
@@ -127,7 +148,7 @@ public class DashboardAuctionDAO {
             );
 
             OfferDAO offerDAO = new OfferDAO(this.connection);
-            dashboardAuction.setWinningBet((offerDAO.winningBetForAuction(dashboardAuction.getId()) == null ) ? 0 : offerDAO.winningBetForAuction(dashboardAuction.getId()).getAmount());
+            dashboardAuction.setWinningBet((offerDAO.winningBetForAuction(dashboardAuction.getId()) == null ) ? dashboardAuction.getInitial_price() : offerDAO.winningBetForAuction(dashboardAuction.getId()).getAmount());
 
             dashboardAuctionList.add(dashboardAuction);
         }

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Offerta</title>
+    <link rel="stylesheet" type="text/css" media="all" href="../../css/style.css" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <div class="menu">
+        <p>
+            <a th:href="@{/GoToHome}">Homepage</a>
+            <a th:href="@{/GoToSell}">Vendo</a>
+            <a th:href="@{/GoToPurchase}">Acquisto</a>
+        </p>
+    </div>
+    <div class="form">
+        <h3>Fai un offerta</h3>
+        <form action="#" th:action="@{/AddOffer}" method="post" >
+            <fieldset>
+                <p>
+                    <a>Offerta Vincente : </a>
+                    <a th:text="${auction.getWinningBet()}"></a>
+                </p>
+                <p>
+                    <a>Rialzo Minimo : </a>
+                    <a th:text="${auction.getMin_rise()}"></a>
+                </p>
+                <p>
+                    <a>Offerta : </a>
+                    <input type="number" name="amount" step="0.01" th:attr="min=${auction.getMin_rise() + auction.getWinningBet()}" required />
+                </p>
+                <p>
+                    <a>Indirizzo di spedizione : </a>
+                    <input type="text" name="sh_address" maxlength="100" required />
+                </p>
+                <input type="hidden" name="id_auction" th:value="${auction.getId()}">
+                <input type="submit" name="offerta" value="Offri">
+                <p th:text=" ${errorMsg}"></p>
+            </fieldset>
+        </form>
+    </div>
+    <h2>Dettagli Asta</h2>
+    <hr>
+    <div class="details">
+        <p th:text="${'Data di Inizio: ' + auction.getStart_date()}"></p>
+        <p th:text="${'Data di Fine: ' + auction.getEnd_date()}"></p>
+        <p th:text="${'Prezzo iniziale: ' + auction.getInitial_price()}"></p>
+        <p th:text="${'Rialzo minimo: ' + auction.getMin_rise()}"></p>
+        <p th:text="${'Nome Articolo: ' + auction.getName()}"></p>
+        <p th:text="${'Codice Articolo: ' + auction.getItem_id()}"></p>
+        <p th:if="${ (auction.getDescription() != null) && (! auction.getDescription().isEmpty()) }" th:text="${'Descrizione: ' + auction.getDescription()}"></p>
+        <div class="image" th:if="${auction.getPicture() != null}">
+            <img th:src="*{'data:image/jpeg;base64,' + auction.getBase64Picture()}" alt="picture">
+        </div>
+    </div>
+</body>
+</html>

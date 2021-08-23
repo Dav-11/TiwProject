@@ -22,6 +22,14 @@ public class Offer {
         this.userUserName = userUserName;
     }
 
+    public Offer(float amount, String sh_address, int id_user, int id_auction) {
+        this.id = id;
+        this.amount = amount;
+        this.sh_address = sh_address;
+        this.id_user = id_user;
+        this.id_auction = id_auction;
+    }
+
     public int getId() {
         return id;
     }
