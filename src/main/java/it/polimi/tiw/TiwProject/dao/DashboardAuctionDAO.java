@@ -108,7 +108,7 @@ public class DashboardAuctionDAO {
                 } else {
 
                     result.next();
-                    return new DashboardAuction(
+                    DashboardAuction dashboardAuction =  new DashboardAuction(
                             result.getInt("id"),
                             result.getString("description"),
                             result.getString("name"),
@@ -121,6 +121,11 @@ public class DashboardAuctionDAO {
                             result.getFloat("initial_price"),
                             result.getFloat("min_rise")
                     );
+
+                    OfferDAO offerDAO = new OfferDAO(this.connection);
+                    dashboardAuction.setWinningBet((offerDAO.winningBetForAuction(dashboardAuction.getId()) == null ) ? dashboardAuction.getInitial_price() : offerDAO.winningBetForAuction(dashboardAuction.getId()).getAmount());
+
+                    return dashboardAuction;
                 }
             }
         }

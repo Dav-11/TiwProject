@@ -82,7 +82,7 @@ public class AddOffer extends HttpServlet {
                 return;
             }
 
-            if ( (amount == -1) || (amount < (dashboardAuction.getMin_rise() + dashboardAuction.getWinningBet())){
+            if ( (amount == -1) || (amount < (dashboardAuction.getMin_rise() + dashboardAuction.getWinningBet()))){
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Offer is less than required");
                 return;
             }
