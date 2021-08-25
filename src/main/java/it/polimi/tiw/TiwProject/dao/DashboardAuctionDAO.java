@@ -123,7 +123,7 @@ public class DashboardAuctionDAO {
                     );
 
                     OfferDAO offerDAO = new OfferDAO(this.connection);
-                    dashboardAuction.setWinningBet((offerDAO.winningBetForAuction(dashboardAuction.getId()) == null ) ? dashboardAuction.getInitial_price() : offerDAO.winningBetForAuction(dashboardAuction.getId()).getAmount());
+                    dashboardAuction.setWinningBet((offerDAO.winningBetForAuction(dashboardAuction.getId()) == null ) ? 0 : offerDAO.winningBetForAuction(dashboardAuction.getId()).getAmount());
 
                     return dashboardAuction;
                 }

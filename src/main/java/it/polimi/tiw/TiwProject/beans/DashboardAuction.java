@@ -109,6 +109,11 @@ public class DashboardAuction {
         return initial_price;
     }
 
+    public float getMinOffer(){
+
+        return (this.winningBet > initial_price) ? ( winningBet + min_rise ) : (initial_price + min_rise);
+    }
+
     public Boolean isOpen(){
 
         return open;
