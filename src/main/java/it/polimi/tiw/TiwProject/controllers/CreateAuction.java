@@ -106,9 +106,9 @@ public class CreateAuction extends HttpServlet {
                 itemPicture = itemPicturePart.getInputStream();
             }
 
-            if (itemDescription.length() >500 ){
+            if ( (itemDescription != null) && ( (itemDescription.length() >500) || (itemDescription.isEmpty()) ) ){
 
-                errorRender("Description must be less than 500 character long", response);
+                errorRender("The Item description cannot be empty or longer than 500 char", response);
                 return;
             }
 
@@ -148,7 +148,7 @@ public class CreateAuction extends HttpServlet {
             ItemDAO itemDAO = new ItemDAO(connection);
             Item item = new Item(
                     itemName,
-                    (itemDescription.isEmpty())? null : itemDescription,
+                    itemDescription,
                     itemPicture,
                     auction.getId()
             );

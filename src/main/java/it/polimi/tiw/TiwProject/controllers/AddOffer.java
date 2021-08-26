@@ -6,6 +6,7 @@ import it.polimi.tiw.TiwProject.beans.User;
 import it.polimi.tiw.TiwProject.dao.DashboardAuctionDAO;
 import it.polimi.tiw.TiwProject.dao.OfferDAO;
 import it.polimi.tiw.TiwProject.utils.ConnectionHandler;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -45,7 +46,7 @@ public class AddOffer extends HttpServlet {
 
                 amount = Float.parseFloat(request.getParameter("amount"));
                 id_auction = Integer.parseInt(request.getParameter("id_auction"));
-                sh_address = request.getParameter("sh_address");
+                sh_address = StringEscapeUtils.escapeJava(request.getParameter("sh_address"));
             } catch (NumberFormatException | NullPointerException e){
 
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect param value");
@@ -73,7 +74,7 @@ public class AddOffer extends HttpServlet {
 
             if (dashboardAuction == null){
 
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Auction not found");
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Auction not found");
                 return;
             }
 
@@ -82,7 +83,7 @@ public class AddOffer extends HttpServlet {
                 return;
             }
 
-            if ( (amount == -1) || (amount < (dashboardAuction.getMin_rise() + dashboardAuction.getWinningBet()))){
+            if ( (amount == -1) || (amount < (dashboardAuction.getMinOffer()))){
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Offer is less than required");
                 return;
             }

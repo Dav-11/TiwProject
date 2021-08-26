@@ -71,6 +71,15 @@ public class CheckLogin extends HttpServlet {
                 throw new BadLoginException(errorMessage);
             }
 
+        } catch (BadLoginException badLoginException){
+
+            // redirects to login screen with error message
+            String path = "/WEB-INF/Templates/login.html";
+            ServletContext servletContext = getServletContext();
+            final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+            ctx.setVariable("errorMsg", badLoginException.getMessage());
+            templateEngine.process(path, ctx, response.getWriter());
+            return;
         } catch ( Exception e){
 
             e.printStackTrace(); //TODO Comment
@@ -104,7 +113,7 @@ public class CheckLogin extends HttpServlet {
             ctx.setVariable("errorMsg", badLoginException.getMessage());
             templateEngine.process(path, ctx, response.getWriter());
             return;
-        }
+        } 
 
         if (user == null) {
 

@@ -85,6 +85,12 @@ public class GetOpenAuction extends HttpServlet {
                     return;
                 }
 
+                if (dashboardAuction.isOutDated()){
+
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN,"Auction has past end date");
+                    return;
+                }
+
             } catch (SQLException e){
 
                 e.printStackTrace();

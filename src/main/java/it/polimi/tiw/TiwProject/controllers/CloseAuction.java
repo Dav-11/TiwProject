@@ -74,6 +74,12 @@ public class CloseAuction extends HttpServlet {
                     return;
                 }
 
+                if (!dashboardAuction.isOutDated()){
+
+                    errorRender("Auction has not past end date yet", response);
+                    return;
+                }
+
                 auctionDAO.closeAuction(auctionId);
 
             } catch (SQLException e){
