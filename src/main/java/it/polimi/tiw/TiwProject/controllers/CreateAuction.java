@@ -60,7 +60,7 @@ public class CreateAuction extends HttpServlet {
             try{
 
                 itemName = StringEscapeUtils.escapeJava(request.getParameter("itemName"));
-                itemDescription = ( request.getParameter("itemDescription") == null ) ? null : StringEscapeUtils.escapeJava(request.getParameter("itemDescription"));
+                itemDescription = ( request.getParameter("itemDescription").isEmpty() ) ? null : StringEscapeUtils.escapeJava(request.getParameter("itemDescription"));
                 itemPicturePart = request.getPart("itemPicture");
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 end_date = (Date) sdf.parse(request.getParameter("end_date"));
@@ -78,6 +78,12 @@ public class CreateAuction extends HttpServlet {
             if ( (itemName == null) || (itemName.isEmpty()) || (end_date == null)){
 
                 errorRender("A name, and an end date must be provided", response);
+                return;
+            }
+
+            if (itemName.length() > 45){
+
+                errorRender("Item Name must be less than 45 char long", response);
                 return;
             }
 

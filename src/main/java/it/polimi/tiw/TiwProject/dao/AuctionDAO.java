@@ -15,7 +15,7 @@ public class AuctionDAO {
 
     public int createAuction(Auction auction) throws SQLException {
 
-        String query = "INSERT INTO auction (start_date, end_date, min_rise, id_user) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO auction (start_date, end_date, min_rise, id_user, initial_price) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
 
@@ -23,6 +23,7 @@ public class AuctionDAO {
             preparedStatement.setTimestamp(2, new Timestamp(auction.getEnd_date().getTime()));
             preparedStatement.setFloat(3, auction.getMin_rise());
             preparedStatement.setInt(4, auction.getId_user());
+            preparedStatement.setFloat(5, auction.getInitial_price());
 
             preparedStatement.executeUpdate();
 
