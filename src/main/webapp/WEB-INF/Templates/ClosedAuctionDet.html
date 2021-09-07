@@ -15,6 +15,11 @@
     </div>
     <h2>Vincitore</h2>
     <hr>
+    <div th:if="${offer == null}" class="winner-details">
+        <p>
+            <a th:text="${'Nessuna offerta'}"></a>
+        </p>
+    </div>
     <div th:if="${offer != null}" class="winner-details">
         <p>
             <a th:text="${'Nome vincitore: '}"></a>
