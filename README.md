@@ -1,4 +1,4 @@
-# tiw
+# TIW Project - Pure HTML
 project for TIW course
 ## Traccia
 ### Versione HTML pura
